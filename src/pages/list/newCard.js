@@ -1,16 +1,49 @@
-import { Table, Modal, Button, Form, Input } from 'antd';
-import React from 'react';
-const FormItem = Form.Item;
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import {Modal,Input} from 'antd'
 
-export default ()=>{
-    return (
-    <div>
-        <Table  />
 
-        <Button>新建</Button>
-        <Modal title="新建记录">
-        ...
-        </Modal>
-    </div>
-    )
+class newList extends Component{
+    render(){
+        const {Form,FormItem}=this.props
+        return(
+            <Modal title='新增记录' visible={this.props.visible}
+              onOk={this.props.handleOk}
+              onCancel={this.props.handleCancel}
+              >
+              <Form>
+                <FormItem label="名称">
+                  {this.props.getItem('name', {
+                    rules: [{ required: true }],
+                  })(
+                    <Input />
+                  )}
+                </FormItem>
+                <FormItem label="描述">
+                  {this.props.getItem('desc')(
+                    <Input />
+                  )}
+                </FormItem>
+                <FormItem label="链接">
+                  {this.props.getItem('url', {
+                    rules: [{ type: 'url' }],
+                  })(
+                    <Input />
+                  )}
+                </FormItem>
+              </Form>
+            </Modal>
+        )
+    }
 }
+
+newList.propTypes={
+    getItem:PropTypes.func.isRequired,
+    handleOk:PropTypes.func.isRequired,
+    handleCancel:PropTypes.func.isRequired,
+    visible:PropTypes.bool.isRequired,
+    Form:PropTypes.object.isRequired,
+    FormItem:PropTypes.object.isRequired
+}
+
+export default newList

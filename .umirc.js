@@ -1,5 +1,4 @@
 export default{
-    // singular: true,
     routes: [{
         path: '/',
         component: '../layout',
@@ -18,8 +17,12 @@ export default{
         },{
             path:'list',
             component:'list'
+        },{
+            path:'upload',
+            component:'upload'
         }]
       }],
+    
     plugins: [
         ['umi-plugin-react', {
             antd:true,
@@ -27,6 +30,10 @@ export default{
             mock:true
         }],
       ],
+    
+    theme:{
+        "@primary-color":"#30b767"
+    }
     // proxy: {
     //     // '/dev': {
     //     //   target: 'http://localhost:8000',

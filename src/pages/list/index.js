@@ -1,11 +1,13 @@
 import { Table ,Button, Modal, Form, Input, Select} from 'antd';
 import { connect } from 'dva';
 import React from 'react';
+import SampleChart from '../../components/sampleChart'
 
 function mapStateToProps(state) {
     return {
       cardsList: state.cards.cardsList,
       cardsLoading: state.loading.effects['cards/queryList'],
+      statistic:state.cards.statistic
     };
   }
 
@@ -19,7 +21,9 @@ class List extends React.Component {
   constructor(){
     super(...arguments),
     this.state={
-      visible:false
+      visible:false,
+      statisticVisible:false,
+      id: null
     }
   }
 
@@ -49,6 +53,22 @@ class List extends React.Component {
     });
   }
 
+  showStatistic = (id) => {
+    console.log("cards/getStatistic")
+    this.props.dispatch({
+      type: 'cards/getStatistic',
+      payload: id,
+    });
+    // 更新 state，弹出包含图表的对话框
+    this.setState({ id, statisticVisible: true });
+  };
+
+  handleStatisticCancel = () => {
+    this.setState({
+      statisticVisible: false,
+  });
+  }
+
     columns = [
         {
           title: '名称',
@@ -63,16 +83,27 @@ class List extends React.Component {
           dataIndex: 'url',
           render: value => <a href={value}>{value}</a>,
         },
-      ];
+        {
+          title:'',
+          dataIndex:'_',
+          render:(_, { id }) => {
+            return (
+              <Button onClick={() => { this.showStatistic(id); }}>图表</Button>
+              )
+            }
+        }
 
-    componentDidMount() {
+      ]
+
+    componentDidMount(){
         this.props.dispatch({
           type: 'cards/queryList',
         });
       }
 
     render() {
-      const { form: { getFieldDecorator } } = this.props;
+      const { form: { getFieldDecorator } ,statistic} = this.props;
+      const {statisticVisible,id}=this.state
         return (
         <div>
             <Table columns={this.columns} dataSource={this.props.cardsList} loading={this.props.cardsLoading} rowKey="id" />
@@ -110,11 +141,17 @@ class List extends React.Component {
                 </FormItem>
               </Form>
             </Modal>
+
+            <Modal visible={statisticVisible} footer={null} onCancel={this.handleStatisticCancel}>
+              {console.log(statistic[id])}
+              <SampleChart data={statistic[id]} />
+            </Modal>
         </div>
         );
+    
     }
 }
 
 
   
-  export default List;
+export default List;

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import G2 from '@antv/g2';
 
 class SampleChart extends React.Component {
@@ -7,14 +8,6 @@ class SampleChart extends React.Component {
     this.containerRef = React.createRef();
   }
 
-  refreshChart = () => {
-    // 接收 data 属性作为数据源
-    this.chart.source(this.props.data);
-    // 此处为硬编码，配置源自 G2 官方示例： https://github.com/antvis/g2
-    // 实际开发中需要封装，推荐直接使用 BizCharts。
-    this.chart.interval().position('genre*sold').color('genre');
-    this.chart.render();
-  };
 
   componentDidMount() {
     // G2 初始化图形代码
@@ -29,11 +22,36 @@ class SampleChart extends React.Component {
     this.refreshChart();
   }
 
+  refreshChart = () => {
+    // 接收 data 属性作为数据源
+    this.chart.source(this.props.data);
+    console.log(this.props)
+    // 此处为硬编码，配置源自 G2 官方示例： https://github.com/antvis/g2
+    // 实际开发中需要封装，推荐直接使用 BizCharts。
+    this.chart.interval().position('genre*sold').color('genre');
+    this.chart.render();
+  };
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.data !== this.props.data) {
+      this.refreshChart();
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.chart) {
+      this.chart.destroy();
+    }
+  }
+
   render() {
     return (
       <div ref={this.containerRef} />
     );
   }
+}
+SampleChart.propTypes={
+  data:PropTypes.array
 }
 
 export default SampleChart;

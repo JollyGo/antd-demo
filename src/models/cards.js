@@ -29,7 +29,9 @@ export default {
       return rsp;
     },
     *getStatistic({ payload }, { call, put }) {
+      console.log('effects cards')
       const rsp = yield call(cardsService.getStatistic, payload);
+      console.log(rsp)
       yield put({
         type: 'saveStatistic',
         payload: {
